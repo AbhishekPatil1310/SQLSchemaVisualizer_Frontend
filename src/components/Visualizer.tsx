@@ -263,45 +263,47 @@ const VisualizerInner = ({ data }: { data: any }) => {
     <div ref={containerRef} className="h-full w-full bg-[#1a1a1a] relative overflow-hidden">
       {/* Loading Overlay */}
       {isExporting && (
-        <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center transition-all">
-          <div className="bg-[#212121] border border-[#444] p-6 rounded-xl shadow-2xl flex flex-col items-center gap-4">
-            <Loader2 size={32} className="text-blue-500 animate-spin" />
+        <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center transition-all p-4">
+          <div className="bg-[#212121] border border-[#444] p-4 md:p-6 rounded-xl shadow-2xl flex flex-col items-center gap-3 md:gap-4 max-w-xs">
+            <Loader2 size={28} className="md:w-8 md:h-8 text-blue-500 animate-spin" />
             <div className="text-center">
-              <p className="text-white font-bold text-sm">Generating Image</p>
-              <p className="text-[#888] text-[10px]">Processing 2048x2048 high-res export...</p>
+              <p className="text-white font-bold text-xs md:text-sm">Generating Image</p>
+              <p className="text-[#888] text-[10px] md:text-xs">Processing 2048x2048 high-res export...</p>
             </div>
           </div>
         </div>
       )}
 
       {/* UI Overlay */}
-      <div className="absolute top-4 left-4 z-50 flex gap-2 items-center">
+      <div className="absolute top-2 md:top-4 left-2 md:left-4 z-50 flex gap-1 md:gap-2 items-center flex-wrap">
         <div className="relative flex items-center">
-          <Search size={14} className="absolute left-3 text-[#777]" />
+          <Search size={14} className="absolute left-2 md:left-3 text-[#777] flex-shrink-0" />
           <input
             type="text"
-            placeholder="Search tables..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={handleSearch}
-            className="bg-[#212121] border border-[#444] text-white text-xs pl-9 pr-3 py-2 rounded-md focus:outline-none focus:border-blue-500 w-48 transition-all"
+            className="bg-[#212121] border border-[#444] text-white text-xs px-2 md:px-3 pl-7 md:pl-9 py-1.5 md:py-2 rounded-md focus:outline-none focus:border-blue-500 w-28 md:w-48 transition-all"
           />
         </div>
       </div>
 
-      <div className="absolute top-4 right-4 z-50 flex gap-2">
+      <div className="absolute top-2 md:top-4 right-2 md:right-4 z-50 flex gap-1 md:gap-2">
         <button
           onClick={downloadImage}
           disabled={isExporting}
-          className="bg-[#212121] border border-[#444] text-white p-2 rounded hover:bg-[#333] flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#212121] border border-[#444] text-white p-1.5 md:p-2 rounded hover:bg-[#333] flex items-center gap-1 md:gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed text-xs md:text-sm"
           title="Save High-Res Image"
         >
-          {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+          {isExporting ? <Loader2 size={14} className="md:w-4 md:h-4 animate-spin" /> : <Download size={14} className="md:w-4 md:h-4" />}
+          <span className="hidden md:inline">Export</span>
         </button>
         <button
           onClick={toggleFullscreen}
-          className="bg-[#212121] border border-[#444] text-white p-2 rounded hover:bg-[#333] transition"
+          className="bg-[#212121] border border-[#444] text-white p-1.5 md:p-2 rounded hover:bg-[#333] transition"
+          title="Toggle Fullscreen"
         >
-          {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          {isFullscreen ? <Minimize2 size={14} className="md:w-4 md:h-4" /> : <Maximize2 size={14} className="md:w-4 md:h-4" />}
         </button>
       </div>
 

@@ -54,12 +54,12 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200">
+    <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200 flex-col md:flex-row">
       <Sidebar />
       
-      <main className="flex-1 flex flex-col min-w-0">
+      <main className="flex-1 flex flex-col min-w-0 w-full">
         {/* Top Section: Editor */}
-        <div className="flex-1 min-h-0 relative flex flex-col md:h-1/2">
+        <div className="flex-1 min-h-0 relative flex flex-col md:h-1/2 min-h-32 md:min-h-0">
           <SqlEditor 
             code={sql} 
             onChange={(val) => setSql(val || "")} 
@@ -69,41 +69,41 @@ function App() {
         </div>
 
         {/* Bottom Section: Tabs & Content */}
-        <div className="flex-1 min-h-0 border-t border-sql-700 bg-sql-900 flex flex-col md:h-1/2">
+        <div className="flex-1 min-h-0 border-t border-sql-700 bg-sql-900 flex flex-col md:h-1/2 min-h-32 md:min-h-0">
           {/* Tab Bar */}
-          <div className="flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2.5 bg-sql-800/50 border-b border-sql-700 flex-wrap">
+          <div className="flex items-center gap-1 md:gap-4 px-2 md:px-4 py-2 md:py-2.5 bg-sql-800/50 border-b border-sql-700 flex-wrap overflow-x-auto">
             <button 
               onClick={() => setActiveTab('data')}
-              className={`flex items-center gap-1.5 md:gap-2 text-xs font-semibold transition whitespace-nowrap ${
+              className={`flex items-center gap-1 md:gap-2 text-xs md:text-sm font-semibold transition whitespace-nowrap py-2 px-2 md:px-0 rounded md:rounded-none ${
                 activeTab === 'data' 
-                  ? 'text-sql-accent border-b-2 border-sql-accent pb-2.5' 
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'text-sql-accent border-b-2 md:border-b-2 border-sql-accent md:pb-2.5' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30 md:hover:bg-transparent'
               }`}
             >
-              <Table size={14} /> <span className="hidden sm:inline">DATA RESULTS</span>
+              <Table size={14} className="flex-shrink-0" /> <span>Data</span>
             </button>
             <button 
               onClick={handleViewSchema}
-              className={`flex items-center gap-1.5 md:gap-2 text-xs font-semibold transition whitespace-nowrap ${
+              className={`flex items-center gap-1 md:gap-2 text-xs md:text-sm font-semibold transition whitespace-nowrap py-2 px-2 md:px-0 rounded md:rounded-none ${
                 activeTab === 'visual' 
-                  ? 'text-sql-accent border-b-2 border-sql-accent pb-2.5' 
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'text-sql-accent border-b-2 md:border-b-2 border-sql-accent md:pb-2.5' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30 md:hover:bg-transparent'
               }`}
             >
-              <Layout size={14} /> <span className="hidden sm:inline">VISUAL SCHEMA</span>
+              <Layout size={14} className="flex-shrink-0" /> <span>Schema</span>
             </button>
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden w-full">
             {activeTab === 'data' ? (
               <ResultSection results={results} />
             ) : (
               schemaData ? (
                 <SchemaVisualizer data={schemaData} />
               ) : (
-                <div className="h-full flex items-center justify-center text-slate-400 text-sm italic">
-                  {loading ? "Mapping database relationships..." : "Click 'Visual Schema' to generate ERD"}
+                <div className="h-full flex items-center justify-center text-slate-400 text-xs md:text-sm italic px-4 text-center">
+                  {loading ? "Mapping database relationships..." : "Click 'Schema' to generate ERD"}
                 </div>
               )
             )}

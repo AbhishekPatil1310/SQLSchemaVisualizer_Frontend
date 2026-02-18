@@ -19,21 +19,21 @@ export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorPro
 
   return (
     <div 
-      className="h-full flex flex-col bg-brand-900"
-      tabIndex={0} // Enables keyboard focus on container
+      className="h-full flex flex-col bg-sql-900"
+      tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex justify-between items-center px-4 py-2 bg-brand-900 border-b border-slate-800">
-        <span className="text-xs font-bold text-slate-400">
+      <div className="flex justify-between items-center gap-2 px-2 md:px-4 py-2 bg-sql-900 border-b border-slate-800 flex-wrap">
+        <span className="text-[10px] md:text-xs font-bold text-slate-400 whitespace-nowrap">
           SQL EDITOR 
-          <span className="ml-2 text-slate-600 text-xs">(Ctrl+Enter to run)</span>
+          <span className="ml-1 md:ml-2 text-slate-600 text-[10px] hidden md:inline">(Ctrl+Enter to run)</span>
         </span>
         <button 
           onClick={onExecute}
           disabled={isLoading}
-          className="px-4 py-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white text-xs font-bold rounded transition-all duration-200"
+          className="px-3 md:px-4 py-1.5 md:py-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white text-[10px] md:text-xs font-bold rounded transition-all duration-200 flex-shrink-0"
         >
-          {isLoading ? 'RUNNING...' : 'RUN QUERY'}
+          {isLoading ? 'RUNNING...' : 'RUN'}
         </button>
       </div>
       <div className="flex-1 overflow-hidden">
@@ -45,11 +45,14 @@ export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorPro
           onChange={onChange}
           options={{
             minimap: { enabled: false },
-            fontSize: 14,
+            fontSize: 12,
             readOnly: isLoading,
             automaticLayout: true,
             scrollBeyondLastLine: false,
-            padding: { top: 12 },
+            padding: { top: 8 },
+            wordWrap: 'on',
+            wrappingStrategy: 'advanced',
+            wrappingIndent: 'indent',
           }}
         />
       </div>
