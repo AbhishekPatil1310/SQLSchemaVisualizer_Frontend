@@ -8,6 +8,10 @@ import type { QueryResponse } from './lib/query';
 import { useAuth } from './context/AuthContext';
 import { AuthPage } from './pages/AuthPage';
 import { Table, Layout } from 'lucide-react';
+import { AIQueryInput } from './components/AIQueryInput';
+import { QueryPreviewPanel } from './components/QueryPreviewPanel';
+import { SchemaSummary } from './components/SchemaSummary';
+import { AIStatistics } from './components/AIStatistics';
 
 function App() {
   const [sql, setSql] = useState("SELECT * FROM users LIMIT 10;");
@@ -15,6 +19,8 @@ function App() {
   const [schemaData, setSchemaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'data' | 'visual'>('data');
+  const [databaseType, setDatabaseType] = useState<'postgres' | 'mysql'>('postgres');
+  const [generatedQuery, setGeneratedQuery] = useState<{ query: string; explanation: string } | null>(null);
   const { isAuthenticated } = useAuth();
 
   // If not logged in, show AuthPage
@@ -100,7 +106,37 @@ function App() {
               <ResultSection results={results} />
             ) : (
               schemaData ? (
-                <SchemaVisualizer data={schemaData} />
+                <div className="grid h-full gap-2 p-2 md:grid-cols-3 md:gap-3 md:p-3">
+                  <div className="space-y-2 overflow-y-auto md:col-span-1">
+                    <div className="rounded-md border border-sql-700 bg-sql-800/40 p-2">
+                      <label className="mb-1 block text-[11px] text-slate-300">Database Type</label>
+                      <select
+                        value={databaseType}
+                        onChange={(event) => setDatabaseType(event.target.value as 'postgres' | 'mysql')}
+                        className="w-full rounded-md border border-sql-700 bg-sql-900 px-2 py-1 text-xs text-slate-200"
+                      >
+                        <option value="postgres">PostgreSQL</option>
+                        <option value="mysql">MySQL</option>
+                      </select>
+                    </div>
+                    <AIQueryInput
+                      databaseType={databaseType}
+                      onQueryGenerated={(query, explanation) => setGeneratedQuery({ query, explanation })}
+                    />
+                    {generatedQuery ? (
+                      <QueryPreviewPanel
+                        query={generatedQuery.query}
+                        explanation={generatedQuery.explanation}
+                        databaseType={databaseType}
+                      />
+                    ) : null}
+                    <SchemaSummary databaseType={databaseType} />
+                    <AIStatistics />
+                  </div>
+                  <div className="min-h-[320px] overflow-hidden rounded-md border border-sql-700 md:col-span-2">
+                    <SchemaVisualizer data={schemaData} />
+                  </div>
+                </div>
               ) : (
                 <div className="h-full flex items-center justify-center text-slate-400 text-xs md:text-sm italic px-4 text-center">
                   {loading ? "Mapping database relationships..." : "Click 'Schema' to generate ERD"}
