@@ -23,20 +23,20 @@ export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorPro
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex justify-between items-center gap-2 px-2 md:px-4 py-2 bg-sql-900 border-b border-slate-800 flex-wrap">
-        <span className="text-[10px] md:text-xs font-bold text-slate-400 whitespace-nowrap">
+      <div className="flex justify-between items-center gap-2 px-2 py-2 bg-sql-900 border-b border-slate-800 flex-wrap">
+        <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">
           SQL EDITOR 
-          <span className="ml-1 md:ml-2 text-slate-600 text-[10px] hidden md:inline">(Ctrl+Enter to run)</span>
+          <span className="ml-1 text-slate-600 text-[10px] hidden sm:inline">(Ctrl+Enter to run)</span>
         </span>
         <button 
           onClick={onExecute}
           disabled={isLoading}
-          className="px-3 md:px-4 py-1.5 md:py-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white text-[10px] md:text-xs font-bold rounded transition-all duration-200 flex-shrink-0"
+          className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white text-[10px] font-bold rounded transition-all duration-200 flex-shrink-0"
         >
           {isLoading ? 'RUNNING...' : 'RUN'}
         </button>
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden min-h-0">
         <Editor
           height="100%"
           defaultLanguage="sql"

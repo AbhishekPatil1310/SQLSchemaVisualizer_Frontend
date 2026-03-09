@@ -21,27 +21,27 @@ export const ResultSection = ({ results }: ResultSectionProps) => {
   return (
     <div className="flex flex-col h-full bg-sql-950">
       {/* Tab Header */}
-      <div className="flex items-center justify-between px-3 md:px-4 py-2.5 border-b border-sql-700 bg-sql-800/50 flex-wrap gap-2">
-        <div className="flex gap-2 md:gap-4">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-sql-700 bg-sql-800/50 flex-wrap gap-2">
+        <div className="flex gap-2">
           <button 
             onClick={() => setViewMode('table')}
-            className={`flex items-center gap-1.5 md:gap-2 text-xs font-semibold transition whitespace-nowrap ${
+            className={`flex items-center gap-1.5 text-xs font-semibold transition whitespace-nowrap ${
               viewMode === 'table' 
                 ? 'text-sql-accent border-b-2 border-sql-accent pb-2' 
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <TableIcon size={14} /> <span className="hidden sm:inline">TABLE</span>
+            <TableIcon size={14} /> <span className="hidden xs:inline">TABLE</span>
           </button>
           <button 
             onClick={() => setViewMode('json')}
-            className={`flex items-center gap-1.5 md:gap-2 text-xs font-semibold transition whitespace-nowrap ${
+            className={`flex items-center gap-1.5 text-xs font-semibold transition whitespace-nowrap ${
               viewMode === 'json' 
                 ? 'text-sql-accent border-b-2 border-sql-accent pb-2' 
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Code size={14} /> <span className="hidden sm:inline">JSON</span>
+            <Code size={14} /> <span className="hidden xs:inline">JSON</span>
           </button>
         </div>
         <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider bg-sql-700/50 px-2 py-1 rounded">

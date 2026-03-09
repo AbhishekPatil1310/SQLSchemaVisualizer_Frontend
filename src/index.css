@@ -26,6 +26,27 @@ body {
   background: #4a5a8a;
 }
 
+/* Thin scrollbar variant */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #3a4a7a;
+  border-radius: 2px;
+}
+
+/* Hide scrollbar variant */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Monaco Editor overrides */
 .monaco-editor {
   background-color: #0f1629 !important;

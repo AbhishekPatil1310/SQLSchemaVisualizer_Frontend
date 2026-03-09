@@ -58,7 +58,7 @@ export function QueryPreviewPanel({ query, explanation, databaseType }: QueryPre
   const indexes = validation?.suggestedIndexes ?? validation?.indexes ?? [];
 
   return (
-    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-4">
+    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-3 md:p-4">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-100">Generated SQL</h3>
         <button
@@ -71,7 +71,7 @@ export function QueryPreviewPanel({ query, explanation, databaseType }: QueryPre
         </button>
       </div>
 
-      <pre className="overflow-x-auto rounded-md bg-sql-950 p-3 text-xs text-slate-200">
+      <pre className="overflow-x-auto rounded-md bg-sql-950 p-3 text-xs text-slate-200 scrollbar-thin">
         <code className="font-mono">{query}</code>
       </pre>
 

@@ -32,7 +32,7 @@ export const Sidebar = () => {
         onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         className="md:hidden fixed bottom-4 left-4 z-40 p-3 rounded-lg bg-sql-accent text-white shadow-lg hover:bg-sql-accent/90 transition-all"
       >
-        {isMobileSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       {/* Sidebar */}

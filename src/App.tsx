@@ -60,12 +60,12 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200 flex-col md:flex-row">
+    <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200">
       <Sidebar />
       
-      <main className="flex-1 flex flex-col min-w-0 w-full">
+      <main className="flex-1 flex flex-col min-w-0 w-full md:ml-0">
         {/* Top Section: Editor */}
-        <div className="flex-1 min-h-0 relative flex flex-col md:h-1/2 min-h-32 md:min-h-0">
+        <div className="h-1/2 min-h-[200px] md:h-1/2 flex flex-col">
           <SqlEditor 
             code={sql} 
             onChange={(val) => setSql(val || "")} 
@@ -75,28 +75,28 @@ function App() {
         </div>
 
         {/* Bottom Section: Tabs & Content */}
-        <div className="flex-1 min-h-0 border-t border-sql-700 bg-sql-900 flex flex-col md:h-1/2 min-h-32 md:min-h-0">
+        <div className="h-1/2 min-h-[200px] md:h-1/2 border-t border-sql-700 bg-sql-900 flex flex-col">
           {/* Tab Bar */}
-          <div className="flex items-center gap-1 md:gap-4 px-2 md:px-4 py-2 md:py-2.5 bg-sql-800/50 border-b border-sql-700 flex-wrap overflow-x-auto">
+          <div className="flex items-center gap-1 px-2 py-2 bg-sql-800/50 border-b border-sql-700 overflow-x-auto scrollbar-hide">
             <button 
               onClick={() => setActiveTab('data')}
-              className={`flex items-center gap-1 md:gap-2 text-xs md:text-sm font-semibold transition whitespace-nowrap py-2 px-2 md:px-0 rounded md:rounded-none ${
+              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${
                 activeTab === 'data' 
-                  ? 'text-sql-accent border-b-2 md:border-b-2 border-sql-accent md:pb-2.5' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30 md:hover:bg-transparent'
+                  ? 'text-sql-accent border-b-2 border-sql-accent' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30'
               }`}
             >
-              <Table size={14} className="flex-shrink-0" /> <span>Data</span>
+              <Table size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Data</span>
             </button>
             <button 
               onClick={handleViewSchema}
-              className={`flex items-center gap-1 md:gap-2 text-xs md:text-sm font-semibold transition whitespace-nowrap py-2 px-2 md:px-0 rounded md:rounded-none ${
+              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${
                 activeTab === 'visual' 
-                  ? 'text-sql-accent border-b-2 md:border-b-2 border-sql-accent md:pb-2.5' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30 md:hover:bg-transparent'
+                  ? 'text-sql-accent border-b-2 border-sql-accent' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30'
               }`}
             >
-              <Layout size={14} className="flex-shrink-0" /> <span>Schema</span>
+              <Layout size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Schema</span>
             </button>
           </div>
 
@@ -106,9 +106,9 @@ function App() {
               <ResultSection results={results} />
             ) : (
               schemaData ? (
-                <div className="grid h-full gap-2 p-2 md:grid-cols-3 md:gap-3 md:p-3">
-                  <div className="space-y-2 overflow-y-auto md:col-span-1">
-                    <div className="rounded-md border border-sql-700 bg-sql-800/40 p-2">
+                <div className="h-full flex flex-col lg:grid lg:grid-cols-3 gap-2 p-2 lg:gap-3 lg:p-3">
+                  <div className="flex flex-col gap-2 overflow-y-auto lg:col-span-1 min-h-0 flex-1 lg:max-h-none">
+                    <div className="rounded-md border border-sql-700 bg-sql-800/40 p-2 flex-shrink-0">
                       <label className="mb-1 block text-[11px] text-slate-300">Database Type</label>
                       <select
                         value={databaseType}
@@ -119,21 +119,23 @@ function App() {
                         <option value="mysql">MySQL</option>
                       </select>
                     </div>
-                    <AIQueryInput
-                      databaseType={databaseType}
-                      onQueryGenerated={(query, explanation) => setGeneratedQuery({ query, explanation })}
-                    />
-                    {generatedQuery ? (
-                      <QueryPreviewPanel
-                        query={generatedQuery.query}
-                        explanation={generatedQuery.explanation}
+                    <div className="flex flex-col gap-2 min-h-0">
+                      <AIQueryInput
                         databaseType={databaseType}
+                        onQueryGenerated={(query, explanation) => setGeneratedQuery({ query, explanation })}
                       />
-                    ) : null}
-                    <SchemaSummary databaseType={databaseType} />
-                    <AIStatistics />
+                      {generatedQuery ? (
+                        <QueryPreviewPanel
+                          query={generatedQuery.query}
+                          explanation={generatedQuery.explanation}
+                          databaseType={databaseType}
+                        />
+                      ) : null}
+                      <SchemaSummary databaseType={databaseType} />
+                      <AIStatistics />
+                    </div>
                   </div>
-                  <div className="min-h-[320px] overflow-hidden rounded-md border border-sql-700 md:col-span-2">
+                  <div className="min-h-[120px] max-h-[200px] lg:min-h-[320px] overflow-hidden rounded-md border border-sql-700 lg:col-span-2 flex-shrink-0">
                     <SchemaVisualizer data={schemaData} />
                   </div>
                 </div>

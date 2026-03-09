@@ -57,7 +57,7 @@ export function AIQueryInput({ onQueryGenerated, databaseType }: AIQueryInputPro
   };
 
   return (
-    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-4">
+    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-3 md:p-4">
       <div className="mb-3 flex items-center gap-2 text-sql-accent">
         <Sparkles size={16} />
         <h3 className="text-sm font-semibold">AI SQL Assistant</h3>
@@ -66,9 +66,9 @@ export function AIQueryInput({ onQueryGenerated, databaseType }: AIQueryInputPro
       <textarea
         value={input}
         onChange={(event) => setInput(event.target.value)}
-        rows={4}
+        rows={3}
         placeholder="Example: Show the top 10 users who placed the most orders in the last 30 days"
-        className="w-full rounded-md border border-sql-700 bg-sql-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sql-accent"
+        className="w-full rounded-md border border-sql-700 bg-sql-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sql-accent resize-none"
       />
 
       <p className="mt-2 text-xs text-slate-400">Tip: include filters, date range, and desired columns for better results.</p>
