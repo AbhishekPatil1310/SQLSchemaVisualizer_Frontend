@@ -12,6 +12,8 @@ import { AIQueryInput } from './components/AIQueryInput';
 import { QueryPreviewPanel } from './components/QueryPreviewPanel';
 import { SchemaSummary } from './components/SchemaSummary';
 import { AIStatistics } from './components/AIStatistics';
+import { Toaster } from './components/ui/sonner';
+import { toast } from 'sonner';
 
 function App() {
   const [sql, setSql] = useState("SELECT * FROM users LIMIT 10;");
@@ -27,7 +29,7 @@ function App() {
   if (!isAuthenticated) {
     return <AuthPage />;
   }
-
+  <Toaster />
   const handleRunQuery = async () => {
     if (!sql.trim()) return;
     setLoading(true);
@@ -35,12 +37,12 @@ function App() {
     setActiveTab('data'); // Switch to data tab when running a query
 
     try {
-      const data = await executeSql(sql, 'table'); 
+      const data = await executeSql(sql, 'table');
       setResults(data);
     } catch (err: any) {
       const serverError = err.response?.data;
       const errorMessage = serverError?.details || serverError?.error || err.message || "Query failed";
-      alert(`Query Error: ${errorMessage}`);
+      (`Query Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,7 @@ function App() {
       const data = await fetchSchema();
       setSchemaData(data);
     } catch (err: any) {
-      alert("Failed to fetch database schema.");
+      toast.error("Failed to fetch database schema.");
     } finally {
       setLoading(false);
     }
@@ -62,13 +64,13 @@ function App() {
   return (
     <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200">
       <Sidebar />
-      
+
       <main className="flex-1 flex flex-col min-w-0 w-full md:ml-0">
         {/* Top Section: Editor */}
         <div className="h-1/2 min-h-[200px] md:h-1/2 flex flex-col">
-          <SqlEditor 
-            code={sql} 
-            onChange={(val) => setSql(val || "")} 
+          <SqlEditor
+            code={sql}
+            onChange={(val) => setSql(val || "")}
             onExecute={handleRunQuery}
             isLoading={loading}
           />
@@ -78,23 +80,21 @@ function App() {
         <div className="h-1/2 min-h-[200px] md:h-1/2 border-t border-sql-700 bg-sql-900 flex flex-col">
           {/* Tab Bar */}
           <div className="flex items-center gap-1 px-2 py-2 bg-sql-800/50 border-b border-sql-700 overflow-x-auto scrollbar-hide">
-            <button 
+            <button
               onClick={() => setActiveTab('data')}
-              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${
-                activeTab === 'data' 
-                  ? 'text-sql-accent border-b-2 border-sql-accent' 
+              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${activeTab === 'data'
+                  ? 'text-sql-accent border-b-2 border-sql-accent'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30'
-              }`}
+                }`}
             >
               <Table size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Data</span>
             </button>
-            <button 
+            <button
               onClick={handleViewSchema}
-              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${
-                activeTab === 'visual' 
-                  ? 'text-sql-accent border-b-2 border-sql-accent' 
+              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${activeTab === 'visual'
+                  ? 'text-sql-accent border-b-2 border-sql-accent'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-sql-700/30'
-              }`}
+                }`}
             >
               <Layout size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Schema</span>
             </button>

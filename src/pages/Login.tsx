@@ -3,6 +3,7 @@ import { loginUser } from '../lib/auth';
 import { useAuth } from '../context/AuthContext';
 import { Database, Lock, Mail } from 'lucide-react';
 import { AuthPage } from './AuthPage';
+import { toast } from 'sonner';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export const LoginPage = () => {
       const data = await loginUser({ email, password });
       login(data.token, data.user);
     } catch (err) {
-      alert("Invalid credentials");
+      toast.error("Invalid credentials");
     }
   };
 

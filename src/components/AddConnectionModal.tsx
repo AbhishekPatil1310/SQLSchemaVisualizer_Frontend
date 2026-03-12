@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Database, Link2 } from 'lucide-react';
 import api from '../lib/api';
 import { useWorkspace } from '../context/WorkspaceContext';
+import { toast } from 'sonner';
 
 export const AddConnectionModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const [label, setLabel] = useState('');
@@ -17,7 +18,7 @@ export const AddConnectionModal = ({ isOpen, onClose }: { isOpen: boolean, onClo
       await refreshConnections();
       onClose();
     } catch (err: any) {
-      alert(err.response?.data?.error || "Failed to save connection");
+      toast.error(err.response?.data?.error || "Failed to save connection");
     }
   };
 

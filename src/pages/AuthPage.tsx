@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { loginUser, registerUser } from '../lib/auth';
 import { useAuth } from '../context/AuthContext';
 import { Database, Lock, Mail, UserPlus, ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
+
 
 export const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
   
   const { login } = useAuth();
@@ -25,7 +27,7 @@ export const AuthPage = () => {
         login(data.token, data.user);
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || "Authentication failed");
+      toast.error(err.response?.data?.message || "Authentication failed");
     } finally {
       setLoading(false);
     }
