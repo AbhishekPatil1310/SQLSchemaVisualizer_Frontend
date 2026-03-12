@@ -3,6 +3,7 @@ import { loginUser, registerUser } from '../lib/auth';
 import { useAuth } from '../context/AuthContext';
 import { Database, Lock, Mail, UserPlus, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { Toaster } from '../components/ui/sonner';
 
 
 export const AuthPage = () => {
@@ -34,7 +35,9 @@ export const AuthPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sql-950 via-sql-900 to-sql-950 p-3 md:p-4 font-sans">
+    <>
+      <Toaster />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sql-950 via-sql-900 to-sql-950 p-3 md:p-4 font-sans">
       <div className="w-full max-w-md space-y-4 md:space-y-8 rounded-xl md:rounded-2xl border border-sql-700 bg-sql-900/80 backdrop-blur-sm p-4 md:p-8 shadow-2xl">
         <div className="text-center">
           <div className="mx-auto flex h-14 md:h-16 w-14 md:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sql-accent to-sql-accent2 text-white shadow-lg shadow-sql-accent/30">
@@ -99,5 +102,6 @@ export const AuthPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
