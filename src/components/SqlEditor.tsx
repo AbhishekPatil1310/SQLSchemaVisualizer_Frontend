@@ -1,5 +1,5 @@
 import Editor from '@monaco-editor/react';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 interface SqlEditorProps {
@@ -11,14 +11,24 @@ interface SqlEditorProps {
 
 export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorProps) => {
   const { theme } = useTheme();
+  const executeRef = useRef(onExecute);
+  const loadingRef = useRef(isLoading);
+
+  useEffect(() => {
+    executeRef.current = onExecute;
+  }, [onExecute]);
+
+  useEffect(() => {
+    loadingRef.current = isLoading;
+  }, [isLoading]);
 
   const handleEditorMount = useCallback((editor: any, monaco: any) => {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-      if (!isLoading) {
-        onExecute();
+      if (!loadingRef.current) {
+        executeRef.current();
       }
     });
-  }, [onExecute, isLoading]);
+  }, []);
 
   return (
     <div 
