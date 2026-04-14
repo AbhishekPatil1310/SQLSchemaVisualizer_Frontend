@@ -46,7 +46,7 @@ function App() {
     } catch (err: any) {
       const serverError = err.response?.data;
       const errorMessage = serverError?.details || serverError?.error || err.message || "Query failed";
-      (`Query Error: ${errorMessage}`);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,9 @@ function App() {
       const data = await fetchSchema();
       setSchemaData(data);
     } catch (err: any) {
-      toast.error("Failed to fetch database schema.");
+      const serverError = err.response?.data;
+      const errorMessage = serverError?.details || serverError?.error || "Failed to fetch database schema.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
