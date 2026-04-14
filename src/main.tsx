@@ -4,15 +4,16 @@ import App from './App.tsx'
 import './index.css'
 import { WorkspaceProvider } from './context/WorkspaceContext'
 import { AuthProvider } from './context/AuthContext.tsx'
-import { Toaster } from './components/ui/sonner'
+import { ThemeProvider } from './context/ThemeContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Toaster />
     <AuthProvider>
-    <WorkspaceProvider>
-      <App />
-    </WorkspaceProvider>
+      <ThemeProvider>
+        <WorkspaceProvider>
+          <App />
+        </WorkspaceProvider>
+      </ThemeProvider>
     </AuthProvider>
   </React.StrictMode>,
 )

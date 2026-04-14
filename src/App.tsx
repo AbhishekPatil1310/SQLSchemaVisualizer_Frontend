@@ -29,7 +29,7 @@ function App() {
   if (!isAuthenticated) {
     return <AuthPage />;
   }
-
+  <Toaster />
   const handleRunQuery = async () => {
     if (!sql.trim()) return;
     setLoading(true);
@@ -42,7 +42,7 @@ function App() {
     } catch (err: any) {
       const serverError = err.response?.data;
       const errorMessage = serverError?.details || serverError?.error || err.message || "Query failed";
-      toast.error(`Query Error: ${errorMessage}`);
+      (`Query Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -62,10 +62,8 @@ function App() {
   };
 
   return (
-    <>
-      <Toaster />
-      <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200">
-        <Sidebar />
+    <div className="flex h-screen overflow-hidden bg-sql-950 text-slate-200">
+      <Sidebar />
 
       <main className="flex-1 flex flex-col min-w-0 w-full md:ml-0">
         {/* Top Section: Editor */}
@@ -150,8 +148,7 @@ function App() {
           </div>
         </div>
       </main>
-      </div>
-    </>
+    </div>
   );
 }
 
