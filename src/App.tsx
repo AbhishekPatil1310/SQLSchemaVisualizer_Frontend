@@ -13,17 +13,21 @@ import { QueryPreviewPanel } from './components/QueryPreviewPanel';
 import { SchemaSummary } from './components/SchemaSummary';
 import { AIStatistics } from './components/AIStatistics';
 import { Toaster } from './components/ui/sonner';
+import { NotesSection } from './components/NotesSection';
 import { toast } from 'sonner';
+import { BookText } from 'lucide-react';
+import { useWorkspace } from './context/WorkspaceContext';
 
 function App() {
   const [sql, setSql] = useState("SELECT * FROM users LIMIT 10;");
   const [results, setResults] = useState<QueryResponse | null>(null);
   const [schemaData, setSchemaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'data' | 'visual'>('data');
+  const [activeTab, setActiveTab] = useState<'data' | 'visual' | 'notes'>('data');
   const [databaseType, setDatabaseType] = useState<'postgres' | 'mysql'>('postgres');
   const [generatedQuery, setGeneratedQuery] = useState<{ query: string; explanation: string } | null>(null);
   const { isAuthenticated } = useAuth();
+  const { activeConn } = useWorkspace();
 
   // If not logged in, show AuthPage
   if (!isAuthenticated) {
@@ -99,12 +103,23 @@ function App() {
             >
               <Layout size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Schema</span>
             </button>
+            <button
+              onClick={() => setActiveTab('notes')}
+              className={`flex items-center gap-1 text-xs font-semibold transition whitespace-nowrap py-2 px-2 rounded ${activeTab === 'notes'
+                  ? 'text-sql-accent border-b-2 border-sql-accent'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-300 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-sql-700/30'
+                }`}
+            >
+              <BookText size={14} className="flex-shrink-0" /> <span className="hidden xs:inline">Notes</span>
+            </button>
           </div>
 
           {/* Content Area */}
           <div className="flex-1 overflow-hidden w-full">
             {activeTab === 'data' ? (
               <ResultSection results={results} />
+            ) : activeTab === 'notes' ? (
+              <NotesSection connectionId={activeConn?.id ?? null} />
             ) : (
               schemaData ? (
                 <div className="h-full flex flex-col lg:grid lg:grid-cols-3 gap-2 p-2 lg:gap-3 lg:p-3">
