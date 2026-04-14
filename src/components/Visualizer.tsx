@@ -313,6 +313,7 @@ const VisualizerInner = ({ data }: { data: any }) => {
         onNodesChange={onNodesChange}
         minZoom={0.05}
         maxZoom={2}
+        panActivationKeyCode={null}
         onInit={(instance) => {
           flowRef.current = instance;
           instance.fitView({ padding: 0.25 });
