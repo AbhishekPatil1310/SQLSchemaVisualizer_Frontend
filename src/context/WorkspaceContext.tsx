@@ -12,6 +12,7 @@ interface WorkspaceContextType {
   activeConn: Connection | null;
   refreshConnections: () => Promise<void>;
   switchWorkspace: (id: string) => Promise<void>;
+  deleteConnection: (id: string) => Promise<void>;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
@@ -31,8 +32,13 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
     await refreshConnections();
   };
 
+  const deleteConnection = async (connectionId: string) => {
+    await api.delete(`/workspace/delete/${connectionId}`);
+    await refreshConnections();
+  };
+
   return (
-    <WorkspaceContext.Provider value={{ connections, activeConn, refreshConnections, switchWorkspace }}>
+    <WorkspaceContext.Provider value={{ connections, activeConn, refreshConnections, switchWorkspace, deleteConnection }}>
       {children}
     </WorkspaceContext.Provider>
   );

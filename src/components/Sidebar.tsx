@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Plus, Database, Server, Settings, LogOut, Loader2, Menu, X } from 'lucide-react';
+import { Plus, Database, Server, Settings, LogOut, Loader2, Menu, X, Trash2 } from 'lucide-react';
 import { useWorkspace } from '../context/WorkspaceContext';
 import { useAuth } from '../context/AuthContext';
 import { AddConnectionModal } from './AddConnectionModal';
+import { toast } from 'sonner';
 
 export const Sidebar = () => {
-  const { connections, activeConn, refreshConnections, switchWorkspace } = useWorkspace();
+  const { connections, activeConn, refreshConnections, switchWorkspace, deleteConnection } = useWorkspace();
   const { logout } = useAuth(); // Destructure logout function
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
     refreshConnections();
@@ -25,10 +28,23 @@ export const Sidebar = () => {
     }
   };
 
+  const handleDeleteConnection = async (id: string) => {
+    setIsDeleting(id);
+    try {
+      await deleteConnection(id);
+      toast.success("Connection deleted successfully");
+      setDeleteConfirm(null);
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || "Failed to delete connection");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
   return (
     <>
       {/* Mobile Menu Button */}
-      <button 
+      <button
         onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         className="md:hidden fixed bottom-4 left-4 z-40 p-3 rounded-lg bg-sql-accent text-white shadow-lg hover:bg-sql-accent/90 transition-all"
       >
@@ -60,31 +76,64 @@ export const Sidebar = () => {
 
           <nav className="space-y-1 max-h-48 md:max-h-none overflow-y-auto">
             {connections.map((conn) => (
-              <button
-                key={conn.id}
-                onClick={() => {
-                  handleWorkspaceSwitch(conn.id);
-                  setIsMobileSidebarOpen(false);
-                }}
-                disabled={!!isSwitching}
-                className={`w-full flex items-center gap-3 px-2.5 md:px-3 py-2 md:py-2 rounded-lg text-xs md:text-sm transition-all duration-200 group ${
-                  activeConn?.id === conn.id 
-                  ? 'bg-sql-accent/10 text-sql-accent border border-sql-accent/30 shadow-sm' 
-                  : 'text-slate-400 hover:bg-sql-800/50 hover:text-slate-200 border border-transparent'
-                }`}
-              >
-                {isSwitching === conn.id ? (
-                  <Loader2 size={16} className="animate-spin flex-shrink-0" />
-                ) : (
-                  <Database size={16} className={`flex-shrink-0 ${activeConn?.id === conn.id ? 'text-sql-accent' : 'group-hover:text-slate-300'}`} />
+              <div key={conn.id} className="group relative">
+                <button
+                  onClick={() => {
+                    handleWorkspaceSwitch(conn.id);
+                    setIsMobileSidebarOpen(false);
+                  }}
+                  disabled={!!isSwitching}
+                  className={`w-full flex items-center gap-3 px-2.5 md:px-3 py-2 md:py-2 rounded-lg text-xs md:text-sm transition-all duration-200 group ${
+                    activeConn?.id === conn.id
+                    ? 'bg-sql-accent/10 text-sql-accent border border-sql-accent/30 shadow-sm'
+                    : 'text-slate-400 hover:bg-sql-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  {isSwitching === conn.id ? (
+                    <Loader2 size={16} className="animate-spin flex-shrink-0" />
+                  ) : (
+                    <Database size={16} className={`flex-shrink-0 ${activeConn?.id === conn.id ? 'text-sql-accent' : 'group-hover:text-slate-300'}`} />
+                  )}
+                  <span className="truncate font-medium flex-1">{conn.label}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteConfirm(conn.id);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 p-1 hover:bg-sql-error/20 rounded text-slate-500 hover:text-sql-error flex-shrink-0"
+                    title="Delete connection"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </button>
+
+                {/* Delete Confirmation Popup */}
+                {deleteConfirm === conn.id && (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-sql-800 border border-sql-error/50 rounded-lg shadow-lg p-2 z-50">
+                    <p className="text-xs text-slate-300 mb-2">Delete "{conn.label}"?</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDeleteConnection(conn.id)}
+                        disabled={isDeleting === conn.id}
+                        className="flex-1 px-2 py-1 text-xs bg-sql-error hover:bg-sql-error/90 disabled:bg-sql-error/50 text-white rounded transition-colors"
+                      >
+                        {isDeleting === conn.id ? "Deleting..." : "Delete"}
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirm(null)}
+                        className="flex-1 px-2 py-1 text-xs bg-sql-700 hover:bg-sql-600 text-slate-300 rounded transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 )}
-                <span className="truncate font-medium">{conn.label}</span>
-              </button>
+              </div>
             ))}
 
             {/* Add Connection Trigger */}
             {connections.length < 5 && (
-              <button 
+              <button
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsMobileSidebarOpen(false);
@@ -104,8 +153,8 @@ export const Sidebar = () => {
             <Settings size={16} className="md:w-[18px] md:h-[18px] flex-shrink-0" />
             <span className="font-medium">Settings</span>
           </button>
-          
-          <button 
+
+          <button
             onClick={() => {
               logout();
               setIsMobileSidebarOpen(false);
@@ -122,7 +171,7 @@ export const Sidebar = () => {
 
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (
-        <div 
+        <div
           className="md:hidden fixed inset-0 z-20 bg-black/50"
           onClick={() => setIsMobileSidebarOpen(false)}
         />
