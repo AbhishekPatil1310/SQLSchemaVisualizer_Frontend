@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { SqlEditor } from './components/SqlEditor';
 import { ResultSection } from './components/ResultSection';
@@ -7,7 +7,7 @@ import { executeSql, fetchSchema } from './lib/query';
 import type { QueryResponse } from './lib/query';
 import { useAuth } from './context/AuthContext';
 import { AuthPage } from './pages/AuthPage';
-import { Table, Layout } from 'lucide-react';
+import { Table, Layout, PanelRight, X } from 'lucide-react';
 import { AIQueryInput } from './components/AIQueryInput';
 import { QueryPreviewPanel } from './components/QueryPreviewPanel';
 import { SchemaSummary } from './components/SchemaSummary';
@@ -23,11 +23,57 @@ function App() {
   const [results, setResults] = useState<QueryResponse | null>(null);
   const [schemaData, setSchemaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [isEditorSchemaOpen, setIsEditorSchemaOpen] = useState(false);
+  const [editorSchemaWidth, setEditorSchemaWidth] = useState(320);
+  const [isResizingEditorSchema, setIsResizingEditorSchema] = useState(false);
+  const [editorSchemaLoading, setEditorSchemaLoading] = useState(false);
+  const [editorSchemaError, setEditorSchemaError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'data' | 'visual' | 'notes'>('data');
   const [databaseType, setDatabaseType] = useState<'postgres' | 'mysql'>('postgres');
   const [generatedQuery, setGeneratedQuery] = useState<{ query: string; explanation: string } | null>(null);
   const { isAuthenticated } = useAuth();
   const { activeConn } = useWorkspace();
+  const editorSectionRef = useRef<HTMLDivElement | null>(null);
+
+  const groupedSchema = useMemo(() => {
+    const schemaRows = schemaData?.schema ?? [];
+    const grouped: Record<string, Array<{ columnName: string; dataType: string }>> = {};
+
+    schemaRows.forEach((row: any) => {
+      const tableName = row.table_name ?? 'unknown_table';
+      grouped[tableName] ??= [];
+      grouped[tableName].push({
+        columnName: row.column_name,
+        dataType: row.data_type,
+      });
+    });
+
+    return grouped;
+  }, [schemaData]);
+
+  useEffect(() => {
+    if (!isResizingEditorSchema) return;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const container = editorSectionRef.current;
+      if (!container) return;
+
+      const bounds = container.getBoundingClientRect();
+      const nextWidth = bounds.right - event.clientX;
+      const clampedWidth = Math.max(240, Math.min(620, nextWidth));
+      setEditorSchemaWidth(clampedWidth);
+    };
+
+    const handleMouseUp = () => setIsResizingEditorSchema(false);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizingEditorSchema]);
 
   // If not logged in, show AuthPage
   if (!isAuthenticated) {
@@ -67,6 +113,39 @@ function App() {
     }
   };
 
+  const loadSchemaForEditorPanel = async () => {
+    if (schemaData?.schema?.length) {
+      setEditorSchemaError(null);
+      return;
+    }
+
+    setEditorSchemaLoading(true);
+    setEditorSchemaError(null);
+
+    try {
+      const data = await fetchSchema();
+      setSchemaData(data);
+    } catch (err: any) {
+      const serverError = err.response?.data;
+      const errorMessage = serverError?.details || serverError?.error || 'Failed to load schema for editor panel.';
+      setEditorSchemaError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setEditorSchemaLoading(false);
+    }
+  };
+
+  const handleToggleEditorSchemaPanel = async () => {
+    if (isEditorSchemaOpen) {
+      setIsEditorSchemaOpen(false);
+      setIsResizingEditorSchema(false);
+      return;
+    }
+
+    setIsEditorSchemaOpen(true);
+    await loadSchemaForEditorPanel();
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100 text-slate-900 transition-colors duration-300 dark:bg-sql-950 dark:text-slate-200">
       <Toaster />
@@ -74,13 +153,96 @@ function App() {
 
       <main className="flex-1 flex flex-col min-w-0 w-full md:ml-0">
         {/* Top Section: Editor */}
-        <div className="h-1/2 min-h-[200px] md:h-1/2 flex flex-col">
-          <SqlEditor
-            code={sql}
-            onChange={(val) => setSql(val || "")}
-            onExecute={handleRunQuery}
-            isLoading={loading}
-          />
+        <div ref={editorSectionRef} className="h-1/2 min-h-[200px] md:h-1/2 flex min-w-0 relative">
+          {!isEditorSchemaOpen ? (
+            <button
+              onClick={handleToggleEditorSchemaPanel}
+              className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 dark:border-sql-700 dark:bg-sql-900 dark:text-slate-200 dark:hover:bg-sql-800"
+            >
+              <PanelRight size={14} />
+              Show Schema
+            </button>
+          ) : null}
+
+          <div className="flex-1 min-w-0">
+            <SqlEditor
+              code={sql}
+              onChange={(val) => setSql(val || "")}
+              onExecute={handleRunQuery}
+              isLoading={loading}
+            />
+          </div>
+
+          {isEditorSchemaOpen ? (
+            <>
+              <div
+                onMouseDown={() => setIsResizingEditorSchema(true)}
+                className="w-1 cursor-col-resize bg-slate-300 transition hover:bg-sql-accent active:bg-sql-accent dark:bg-sql-700"
+                role="separator"
+                aria-orientation="vertical"
+                aria-label="Resize schema panel"
+              />
+
+              <aside
+                className="h-full shrink-0 border-l border-slate-300 bg-white dark:border-sql-700 dark:bg-sql-900"
+                style={{ width: `${editorSchemaWidth}px` }}
+              >
+                <div className="flex items-center justify-between border-b border-slate-300 px-3 py-2 dark:border-sql-700">
+                  <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-slate-200">Schema Explorer</span>
+                  <button
+                    onClick={handleToggleEditorSchemaPanel}
+                    className="rounded p-1 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-sql-800 dark:hover:text-white"
+                    aria-label="Close schema panel"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                <div className="h-[calc(100%-41px)] overflow-auto p-2">
+                  {editorSchemaLoading ? (
+                    <div className="rounded border border-slate-300 bg-slate-100 p-3 text-xs text-slate-600 dark:border-sql-700 dark:bg-sql-800/40 dark:text-slate-300">
+                      Loading schema...
+                    </div>
+                  ) : editorSchemaError ? (
+                    <div className="rounded border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300">
+                      {editorSchemaError}
+                    </div>
+                  ) : Object.keys(groupedSchema).length ? (
+                    <div className="space-y-2">
+                      {Object.entries(groupedSchema)
+                        .sort(([tableA], [tableB]) => tableA.localeCompare(tableB))
+                        .map(([tableName, columns]) => (
+                          <details
+                            key={tableName}
+                            open
+                            className="rounded border border-slate-300 bg-slate-50 dark:border-sql-700 dark:bg-sql-800/30"
+                          >
+                            <summary className="cursor-pointer select-none px-2 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                              {tableName} ({columns.length})
+                            </summary>
+                            <div className="border-t border-slate-300 px-2 py-1 dark:border-sql-700">
+                              {columns.map((column, index) => (
+                                <div
+                                  key={`${tableName}-${column.columnName}-${index}`}
+                                  className="flex items-center justify-between py-1 text-[11px]"
+                                >
+                                  <span className="text-slate-700 dark:text-slate-200">{column.columnName}</span>
+                                  <span className="text-slate-500 dark:text-slate-400">{column.dataType}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="rounded border border-slate-300 bg-slate-100 p-3 text-xs text-slate-600 dark:border-sql-700 dark:bg-sql-800/40 dark:text-slate-300">
+                      Click "Show Schema" to load tables and columns.
+                    </div>
+                  )}
+                </div>
+              </aside>
+            </>
+          ) : null}
         </div>
 
         {/* Bottom Section: Tabs & Content */}
