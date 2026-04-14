@@ -57,22 +57,22 @@ export const Sidebar = () => {
       {/* Sidebar */}
       <aside className={`${
         isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 transition-transform duration-300 fixed md:relative w-full md:w-64 z-30 h-screen md:h-auto bg-sql-900 border-r border-sql-700 flex flex-col select-none`}>
+      } md:translate-x-0 transition-transform duration-300 fixed md:relative w-full md:w-64 z-30 h-screen md:h-auto bg-white border-r border-slate-300 flex flex-col select-none dark:bg-sql-900 dark:border-sql-700`}>
 
         {/* Header */}
-        <div className="p-3 md:p-6 border-b md:border-b-0 border-sql-700">
+        <div className="p-3 md:p-6 border-b md:border-b-0 border-slate-300 dark:border-sql-700">
           <div className="flex items-center gap-2 mb-4 md:mb-8">
             <div className="bg-gradient-to-br from-sql-accent to-sql-accent2 p-1.5 rounded-lg shadow-lg shadow-sql-accent/20">
               <Server size={18} className="text-white" />
             </div>
-            <span className="font-bold text-lg md:text-xl text-white truncate">SQL Workspace</span>
+            <span className="font-bold text-lg md:text-xl text-slate-900 truncate dark:text-white">SQL Workspace</span>
           </div>
 
           {/* Connections Header */}
           <div className="flex justify-between items-center mb-3 md:mb-4">
             <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Connections</h3>
             <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${
-              connections.length >= 5 ? 'bg-sql-warning/30 text-sql-warning' : 'bg-sql-700 text-slate-400'
+              connections.length >= 5 ? 'bg-sql-warning/20 text-amber-700 dark:bg-sql-warning/30 dark:text-sql-warning' : 'bg-slate-200 text-slate-700 dark:bg-sql-700 dark:text-slate-400'
             }`}>
               {connections.length}/5
             </span>
@@ -92,8 +92,8 @@ export const Sidebar = () => {
                   disabled={!!isSwitching}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs md:text-sm transition-all duration-200 ${
                     activeConn?.id === conn.id
-                      ? 'bg-sql-accent/10 text-sql-accent border border-sql-accent/30 shadow-sm'
-                      : 'text-slate-400 hover:bg-sql-800/50 hover:text-slate-200 border border-transparent'
+                      ? 'bg-cyan-100 text-cyan-700 border border-cyan-300 shadow-sm dark:bg-sql-accent/10 dark:text-sql-accent dark:border-sql-accent/30'
+                      : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-transparent dark:text-slate-400 dark:hover:bg-sql-800/50 dark:hover:text-slate-200'
                   }`}
                 >
                   {isSwitching === conn.id ? (
@@ -118,8 +118,8 @@ export const Sidebar = () => {
 
                 {/* Delete Popup */}
                 {deleteConfirm === conn.id && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-sql-800 border border-sql-error/50 rounded-lg shadow-lg p-2 z-50">
-                    <p className="text-xs text-slate-300 mb-2">Delete "{conn.label}"?</p>
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-red-300 rounded-lg shadow-lg p-2 z-50 dark:bg-sql-800 dark:border-sql-error/50">
+                    <p className="text-xs text-slate-700 mb-2 dark:text-slate-300">Delete "{conn.label}"?</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleDeleteConnection(conn.id)}
@@ -130,7 +130,7 @@ export const Sidebar = () => {
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(null)}
-                        className="flex-1 px-2 py-1 text-xs bg-sql-700 hover:bg-sql-600 text-slate-300 rounded"
+                        className="flex-1 px-2 py-1 text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 rounded dark:bg-sql-700 dark:hover:bg-sql-600 dark:text-slate-300"
                       >
                         Cancel
                       </button>
@@ -148,7 +148,7 @@ export const Sidebar = () => {
                   setIsModalOpen(true);
                   setIsMobileSidebarOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs md:text-sm text-slate-500 border border-dashed border-sql-700 hover:border-sql-accent/50 hover:text-sql-accent/80 transition-all mt-2"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs md:text-sm text-slate-600 border border-dashed border-slate-300 hover:border-sql-accent/50 hover:text-sql-accent transition-all mt-2 dark:text-slate-500 dark:border-sql-700 dark:hover:text-sql-accent/80"
               >
                 <Plus size={16} />
                 <span>Add Database</span>
@@ -158,16 +158,24 @@ export const Sidebar = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-auto p-3 border-t border-sql-700 space-y-1 bg-sql-800/30">
+        <div className="mt-auto p-3 border-t border-slate-300 space-y-1 bg-slate-100 dark:border-sql-700 dark:bg-sql-800/30">
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-sql-700/50 w-full rounded-lg text-xs md:text-sm"
+            className="flex items-center gap-3 px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-200 w-full rounded-lg text-xs md:text-sm dark:text-slate-300 dark:hover:text-white dark:hover:bg-sql-700/50"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            <span className="font-medium">{theme} Mode</span>
+            <span className="font-medium flex-1 text-left">{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
+            <span className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
+              theme === 'light' ? 'bg-cyan-500' : 'bg-slate-500 dark:bg-sql-700'
+            }`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                theme === 'light' ? 'translate-x-5' : 'translate-x-1'
+              }`} />
+            </span>
           </button>
 
-          <button className="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-sql-700/50 w-full rounded-lg text-xs md:text-sm">
+          <button className="flex items-center gap-3 px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-200 w-full rounded-lg text-xs md:text-sm dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-sql-700/50">
             <Settings size={16} />
             <span className="font-medium">Settings</span>
           </button>
@@ -177,7 +185,7 @@ export const Sidebar = () => {
               logout();
               setIsMobileSidebarOpen(false);
             }}
-            className="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-sql-error hover:bg-sql-error/5 w-full rounded-lg text-xs md:text-sm"
+            className="flex items-center gap-3 px-3 py-2 text-slate-700 hover:text-sql-error hover:bg-red-500/10 w-full rounded-lg text-xs md:text-sm dark:text-slate-400 dark:hover:bg-sql-error/5"
           >
             <LogOut size={16} />
             <span className="font-medium">Logout</span>

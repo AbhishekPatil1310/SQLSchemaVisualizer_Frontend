@@ -13,7 +13,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem('theme');
-    return (stored as Theme) || 'dark';
+    if (stored === 'light' || stored === 'dark') {
+      return stored;
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   useEffect(() => {
@@ -24,6 +28,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     } else {
       htmlElement.classList.add('dark');
     }
+    htmlElement.style.colorScheme = theme;
   }, [theme]);
 
   const toggleTheme = () => {

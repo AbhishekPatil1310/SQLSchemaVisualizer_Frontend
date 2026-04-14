@@ -57,7 +57,7 @@ export function AIQueryInput({ onQueryGenerated, databaseType }: AIQueryInputPro
   };
 
   return (
-    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-3 md:p-4">
+    <section className="rounded-lg border border-slate-300 bg-white p-3 md:p-4 dark:border-sql-700 dark:bg-sql-900/60">
       <div className="mb-3 flex items-center gap-2 text-sql-accent">
         <Sparkles size={16} />
         <h3 className="text-sm font-semibold">AI SQL Assistant</h3>
@@ -68,14 +68,14 @@ export function AIQueryInput({ onQueryGenerated, databaseType }: AIQueryInputPro
         onChange={(event) => setInput(event.target.value)}
         rows={3}
         placeholder="Example: Show the top 10 users who placed the most orders in the last 30 days"
-        className="w-full rounded-md border border-sql-700 bg-sql-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sql-accent resize-none"
+        className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-sql-accent resize-none dark:border-sql-700 dark:bg-sql-950 dark:text-slate-100"
       />
 
-      <p className="mt-2 text-xs text-slate-400">Tip: include filters, date range, and desired columns for better results.</p>
+      <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">Tip: include filters, date range, and desired columns for better results.</p>
 
-      {error ? <p className="mt-2 rounded-md bg-red-500/10 px-3 py-2 text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="mt-2 rounded-md bg-red-500/10 px-3 py-2 text-xs text-red-700 dark:text-red-300">{error}</p> : null}
       {!input.trim() ? (
-        <p className="mt-2 text-xs font-medium text-amber-300">Type your request above to generate SQL.</p>
+        <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-300">Type your request above to generate SQL.</p>
       ) : null}
 
       <button

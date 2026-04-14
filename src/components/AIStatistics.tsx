@@ -56,15 +56,15 @@ export function AIStatistics() {
 
   if (!stats) {
     return (
-      <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-4 text-xs text-slate-400">
+      <section className="rounded-lg border border-slate-300 bg-white p-4 text-xs text-slate-600 dark:border-sql-700 dark:bg-sql-900/60 dark:text-slate-400">
         AI stats unavailable.
       </section>
     );
   }
 
   return (
-    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-4 text-xs text-slate-300">
-      <p className="font-semibold text-slate-100">AI Statistics</p>
+    <section className="rounded-lg border border-slate-300 bg-white p-4 text-xs text-slate-700 dark:border-sql-700 dark:bg-sql-900/60 dark:text-slate-300">
+      <p className="font-semibold text-slate-900 dark:text-slate-100">AI Statistics</p>
       <p className="mt-2">Cache items: {stats.aiService.cachedItems}</p>
       <p>Hit rate: {(stats.aiService.hitRate * 100).toFixed(1)}%</p>
       <p>Total requests: {stats.aiService.requests}</p>
@@ -73,4 +73,3 @@ export function AIStatistics() {
     </section>
   );
 }
-

@@ -53,11 +53,11 @@ export function SchemaSummary({ databaseType }: SchemaSummaryProps) {
   }, [databaseType]);
 
   if (loading) {
-    return <div className="rounded-lg border border-sql-700 bg-sql-900/60 p-4 text-xs text-slate-400">Loading schema summary...</div>;
+    return <div className="rounded-lg border border-slate-300 bg-white p-4 text-xs text-slate-600 dark:border-sql-700 dark:bg-sql-900/60 dark:text-slate-400">Loading schema summary...</div>;
   }
 
   if (error) {
-    return <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-xs text-red-300">{error}</div>;
+    return <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-xs text-red-700 dark:text-red-300">{error}</div>;
   }
 
   if (!data) {
@@ -65,13 +65,12 @@ export function SchemaSummary({ databaseType }: SchemaSummaryProps) {
   }
 
   return (
-    <section className="rounded-lg border border-sql-700 bg-sql-900/60 p-4">
-      <p className="text-xs font-semibold text-slate-100">AI Schema Summary</p>
-      <p className="mt-2 text-xs text-slate-300">{data.summary}</p>
-      <p className="mt-2 text-xs text-slate-400">
+    <section className="rounded-lg border border-slate-300 bg-white p-4 dark:border-sql-700 dark:bg-sql-900/60">
+      <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">AI Schema Summary</p>
+      <p className="mt-2 text-xs text-slate-700 dark:text-slate-300">{data.summary}</p>
+      <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">
         Tables: {data.tablesCount} | Relationships: {data.relationshipsCount}
       </p>
     </section>
   );
 }
-

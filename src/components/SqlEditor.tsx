@@ -1,5 +1,6 @@
 import Editor from '@monaco-editor/react';
 import { useCallback } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 interface SqlEditorProps {
   code: string;
@@ -9,6 +10,8 @@ interface SqlEditorProps {
 }
 
 export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorProps) => {
+  const { theme } = useTheme();
+
   const handleKeyDown = useCallback((ev: React.KeyboardEvent<HTMLDivElement>) => {
     // Ctrl+Enter to execute query
     if (ev.ctrlKey && ev.key === 'Enter' && !isLoading) {
@@ -19,14 +22,14 @@ export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorPro
 
   return (
     <div 
-      className="h-full flex flex-col bg-sql-900"
+      className="h-full flex flex-col bg-white dark:bg-sql-900 transition-colors duration-300"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex justify-between items-center gap-2 px-2 py-2 bg-sql-900 border-b border-slate-800 flex-wrap">
-        <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">
+      <div className="flex justify-between items-center gap-2 px-2 py-2 bg-slate-100 border-b border-slate-300 flex-wrap dark:bg-sql-900 dark:border-slate-800">
+        <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap">
           SQL EDITOR 
-          <span className="ml-1 text-slate-600 text-[10px] hidden sm:inline">(Ctrl+Enter to run)</span>
+          <span className="ml-1 text-slate-500 dark:text-slate-600 text-[10px] hidden sm:inline">(Ctrl+Enter to run)</span>
         </span>
         <button 
           onClick={onExecute}
@@ -40,7 +43,7 @@ export const SqlEditor = ({ code, onChange, onExecute, isLoading }: SqlEditorPro
         <Editor
           height="100%"
           defaultLanguage="sql"
-          theme="vs-dark"
+          theme={theme === 'light' ? 'vs' : 'vs-dark'}
           value={code}
           onChange={onChange}
           options={{
