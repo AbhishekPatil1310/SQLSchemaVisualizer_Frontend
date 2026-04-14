@@ -50,7 +50,7 @@ export const ResultSection = ({ results }: ResultSectionProps) => {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto border-t border-slate-300 dark:border-sql-700">
         {viewMode === 'table' ? (
           <DataTable columns={results.columns || []} rows={results.rows || []} />
         ) : (
